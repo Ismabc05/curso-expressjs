@@ -1,3 +1,4 @@
+require("dotenv").config() // con esto puedo leer las variables de entorno
 const express = require("express")
 
 const app = express();
