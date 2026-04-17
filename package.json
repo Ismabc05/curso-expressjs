@@ -6,10 +6,19 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "ismael bedmar cejas <ismaelbedmarcejas@gmail.com>",
+  "license": "MIT",
+  "description": "curso express.js",
   "dependencies": {
     "express": "^5.2.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ismabc05/curso-expressjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ismabc05/curso-expressjs/issues"
+  },
+  "homepage": "https://github.com/Ismabc05/curso-expressjs#readme"
 }
