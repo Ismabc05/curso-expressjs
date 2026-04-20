@@ -103,7 +103,7 @@ app.post("/users", (req, res) => {
 
         const users = JSON.parse(data);
         users.push(newUser);
-        fs.writeFile(userFilePath, JSON.stringify(users, null, 2), err => {
+        fs.writeFile(userFilePath, JSON.stringify(users, null, 2), (err) => {
             if(err) {
                 return res.status(500).json({error : "Error al guardar el usuario"})
             }

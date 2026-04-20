@@ -13,5 +13,15 @@
     "id": 3,
     "name": "Ismael Bedmar",
     "email": "ismael@example.com"
+  },
+  {
+    "id": 3,
+    "name": "Nerea Bedmar",
+    "email": "nerea@example.com"
+  },
+  {
+    "id": 3,
+    "name": "Angel Bedmar",
+    "email": "angel@example.com"
   }
 ]
