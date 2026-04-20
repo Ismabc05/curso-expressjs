@@ -113,6 +113,30 @@ app.post("/users", (req, res) => {
 
 })
 
+app.put("/users/:id", (req, res) => {
+    const userId = parseInt(req.params.id, 10) //como vendrá en string, los convertimos a numero
+    const updateUser = req.body
+
+    fs.readFile(userFilePath, "utf-8", (err, data) => {
+        if(err) {
+            return res.status(500).json({error: "Error con conexion de datos"})
+        }
+
+        let users = JSON.parse(data);
+        users = users.map(user => (user.id === userId ? {...user, ...updateUser} :
+            user
+        ))
+
+        fs.writeFile(userFilePath, JSON.stringify(users, null, 2), (err) => {
+            if(err) {
+                return res.status(500).json({error: "Error al actualizar el usuario"})
+            }
+            res.json(updateUser)
+        })
+
+    })
+})
+
 
 app.listen(PORT, () => {
     console.log("Servidor corriendo")
