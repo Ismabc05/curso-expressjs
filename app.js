@@ -1,12 +1,18 @@
 require("dotenv").config() // con esto puedo leer las variables de entorno
 const express = require("express")
 const bodyParser = require("body-parser")
+const { checkName, checkEmail } = require("./regex");
 
 const app = express();
 app.use(bodyParser.json()) // Permite leer JSON del body
 app.use(bodyParser.urlencoded({ extended: true })) // Permite leer datos de formularios
-
 // “Gracias a body-parser, los datos del body (JSON o formularios) se parsean y se convierten en objetos JavaScript accesibles en req.body.”
+
+
+const fs = require("fs");
+const path = require("path")
+const userFilePath = path.join(__dirname, "users.json") 
+
 
 const PORT = process.env.PORT || 3000;
 
@@ -66,6 +72,45 @@ app.post("/api/data", (req, res) => {
         message: "Datos JSON recibidos",
         data: data
     })
+})
+
+app.get("/users", (req, res) => {
+    fs.readFile(userFilePath, "utf-8", (err, data) => {
+        if(err) {
+            return res.status(500).json({error: "Error con conexion de datos."})
+        }
+
+        const users = JSON.parse(data);
+        res.json(users)
+    })
+})
+
+app.post("/users", (req, res) => {
+    const newUser = req.body;
+
+    if(!checkName(req.body.name)) {
+        return res.status(500).json({error: "El nombre no cumple los requisitos"})
+    }
+
+    if(!checkEmail(req.body.email)) {
+        return res.status(500).json({error: "El email no cumple los requisitos"})
+    }
+
+    fs.readFile(userFilePath, "utf-8", (err, data) => {
+        if(err) {
+            return res.status(500).json({error: "Error con conexion de datos"})
+        }
+
+        const users = JSON.parse(data);
+        users.push(newUser);
+        fs.writeFile(userFilePath, JSON.stringify(users, null, 2), err => {
+            if(err) {
+                return res.status(500).json({error : "Error al guardar el usuario"})
+            }
+            res.status(201).json(newUser)
+        })
+    })
+
 })
 
 
