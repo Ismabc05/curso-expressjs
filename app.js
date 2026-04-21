@@ -4,9 +4,8 @@ const bodyParser = require("body-parser")
 const { validateUser } = require("./regex");
 
 const app = express();
-app.use(bodyParser.json()) // Permite leer JSON del body
-app.use(bodyParser.urlencoded({ extended: true })) // Permite leer datos de formularios
-// “Gracias a body-parser, los datos del body (JSON o formularios) se parsean y se convierten en objetos JavaScript accesibles en req.body.”
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 
 const fs = require("fs");
@@ -139,7 +138,26 @@ app.put("/users/:id", (req, res) => {
                 res.json(updateUser)
             })
         })
+})
+
+app.delete("/users/:id", (req, res) => {
+    const userID = parseInt(req.params.id, 10)
+    fs.readFile(userFilePath, "utf-8", (err, data) => {
+        if(err) {
+            return res.status(500).json({error: "Error al conectarse al servidor"})
+        }
+        let users = JSON.parse(data)
+
+        users = users.filter(user => user.id !== userID) // filtramos los usuarios que no coincidan con ese id
+
+        fs.writeFile(userFilePath, JSON.stringify(users, null, 2), (err) => {
+            if(err) {
+                return res.status(500).json({error : "Error al eliminar el usuario"})
+            }
+            res.status(204).send()
+        })
     })
+})
 
 
 app.listen(PORT, () => {
