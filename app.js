@@ -77,65 +77,66 @@ app.post("/api/data", (req, res) => {
 app.get("/users", (req, res) => {
     fs.readFile(userFilePath, "utf-8", (err, data) => {
         if(err) {
-            return res.status(500).json({error: "Error con conexion de datos."})
+            return res.status(500).json({error : "Error con con la conexion del servidor"})
         }
 
-        const users = JSON.parse(data);
+        const users = JSON.parse(data)
         res.json(users)
     })
 })
 
 app.post("/users", (req, res) => {
-    const newUser = req.body;
+    const newUser = req.body
 
-    if(!checkName(req.body.name)) {
-        return res.status(500).json({error: "El nombre no cumple los requisitos"})
+    if(!checkName(req.body.name)){
+        return res.status(500).json({error: "El nombre es incorrecto"})
     }
 
-    if(!checkEmail(req.body.email)) {
-        return res.status(500).json({error: "El email no cumple los requisitos"})
+    if(!checkEmail(req.body.email)){
+        return res.status(500).json({error: "El email es incorrecto"})
     }
 
     fs.readFile(userFilePath, "utf-8", (err, data) => {
         if(err) {
-            return res.status(500).json({error: "Error con conexion de datos"})
+            return res.status(500).json({error: "Error con la base de datos"})
         }
-
         const users = JSON.parse(data);
         users.push(newUser);
+
         fs.writeFile(userFilePath, JSON.stringify(users, null, 2), (err) => {
             if(err) {
-                return res.status(500).json({error : "Error al guardar el usuario"})
+                return res.status(500).json({error: "Error al crear el usuario"})
             }
             res.status(201).json(newUser)
         })
     })
-
 })
 
 app.put("/users/:id", (req, res) => {
-    const userId = parseInt(req.params.id, 10) //como vendrá en string, los convertimos a numero
+    const userId = parseInt(req.params.id, 10)
     const updateUser = req.body
 
     fs.readFile(userFilePath, "utf-8", (err, data) => {
         if(err) {
-            return res.status(500).json({error: "Error con conexion de datos"})
+            return res.status(500).json({error: "Error al conectar con el servidor"})
         }
-
-        let users = JSON.parse(data);
-        users = users.map(user => (user.id === userId ? {...user, ...updateUser} :
-            user
-        ))
-
-        fs.writeFile(userFilePath, JSON.stringify(users, null, 2), (err) => {
-            if(err) {
-                return res.status(500).json({error: "Error al actualizar el usuario"})
+        let users = JSON.parse(data)
+        users = users.map((user) => {
+            if(user.id === userId) {
+                return {...user, ...updateUser}
+            }else {
+                return user
             }
-            res.json(updateUser)
         })
 
+            fs.writeFile(userFilePath, JSON.stringify(users, null, 2), (err) => {
+                if(err) {
+                    return res.status(500).json({error: "Error al actualizar el usuario"})
+                }
+                res.json(updateUser)
+            })
+        })
     })
-})
 
 
 app.listen(PORT, () => {
