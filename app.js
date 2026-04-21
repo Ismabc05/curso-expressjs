@@ -1,7 +1,7 @@
-require("dotenv").config() // con esto puedo leer las variables de entorno
+require("dotenv").config() 
 const express = require("express")
 const bodyParser = require("body-parser")
-const { checkName, checkEmail } = require("./regex");
+const { validateUser } = require("./regex");
 
 const app = express();
 app.use(bodyParser.json()) // Permite leer JSON del body
@@ -88,19 +88,17 @@ app.get("/users", (req, res) => {
 app.post("/users", (req, res) => {
     const newUser = req.body
 
-    if(!checkName(req.body.name)){
-        return res.status(500).json({error: "El nombre es incorrecto"})
-    }
-
-    if(!checkEmail(req.body.email)){
-        return res.status(500).json({error: "El email es incorrecto"})
-    }
-
     fs.readFile(userFilePath, "utf-8", (err, data) => {
         if(err) {
             return res.status(500).json({error: "Error con la base de datos"})
         }
         const users = JSON.parse(data);
+
+        const validation = validateUser(newUser, users, false);
+        if(!validation.isValid) {
+            return res.status(400).json({error: validation.errors})
+        }
+
         users.push(newUser);
 
         fs.writeFile(userFilePath, JSON.stringify(users, null, 2), (err) => {
@@ -121,6 +119,11 @@ app.put("/users/:id", (req, res) => {
             return res.status(500).json({error: "Error al conectar con el servidor"})
         }
         let users = JSON.parse(data)
+
+        const validation = validateUser(updateUser, users, true);
+        if(!validation.isValid) {
+            return res.status(400).json({error: validation.errors})
+        }
         users = users.map((user) => {
             if(user.id === userId) {
                 return {...user, ...updateUser}
