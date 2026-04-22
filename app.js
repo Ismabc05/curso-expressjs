@@ -3,12 +3,14 @@ const express = require("express")
 const bodyParser = require("body-parser")
 
 const LoggerMiddleware = require("./middlewares/logger")
+const errorHandler = require("./middlewares/errorHandler")
 const { validateUser } = require("./utils/regex");
 
 const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(LoggerMiddleware) // LLamamos a nuestro middleware
+app.use(errorHandler)
 
 
 const fs = require("fs");
@@ -161,6 +163,10 @@ app.delete("/users/:id", (req, res) => {
         })
     })
 })
+
+app.get("/error", (req, res, next) => {
+    next(new Error("Error intecionado"))
+});
 
 
 app.listen(PORT, () => {
