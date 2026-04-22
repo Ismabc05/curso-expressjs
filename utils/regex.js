@@ -27,11 +27,11 @@ function validateUser(user, users, isUpdate= false) {
   }
   
   if (isUpdate) {
-    if (!isValidIdForUpdate(user.id, users)) {
+    if (!isValidForUpdate(user.id, users)) {
       errors.push("El ID debe existir para poder actualizar");
     }
   } else {
-    if (!isValidIdForCreate(user.id, users)) {
+    if (!isValidForCreate(user.id, users)) {
       errors.push("El ID debe ser numérico y único");
     }
   }

@@ -1,11 +1,14 @@
 require("dotenv").config() 
 const express = require("express")
 const bodyParser = require("body-parser")
-const { validateUser } = require("./regex");
+
+const LoggerMiddleware = require("./middlewares/logger")
+const { validateUser } = require("./utils/regex");
 
 const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(LoggerMiddleware) // LLamamos a nuestro middleware
 
 
 const fs = require("fs");
@@ -24,13 +27,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/users/:id", (req, res) => {
-    const userID = req.params.id; // tenemos acceso al id de la ruta gracias a params
+    const userID = req.params.id;
     res.send(`Mostar informacion del usuario con el id: ${userID}`)
 });
 
 app.get("/search", (req, res) => {
-    const terms = req.query.termino || "No especificado" // obtiene el valor despues  del ? en termino
-    const category = req.query.categoria || "Todas" // obtiene el valor despues del ? en cateogria
+    const terms = req.query.termino || "No especificado" 
+    const category = req.query.categoria || "Todas"
     res.send(`
         <h2>Resultados de busqueda</h2>
         <p>Termino: ${terms}</p>
