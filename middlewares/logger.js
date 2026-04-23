@@ -1,17 +1,17 @@
-// vamos a crear un logger, que es un middleware que se encarga de guardar informacion de la solicitud antes de que enviamos la respuesta
 const LoggerMiddleware = (req, res, next) => {
-    const fecha = new Date().toISOString(); // fecha actual
 
-    console.log(`[${fecha} ${req.method} ${req.url} - IP_ ${req.ip}]`)
+    const fecha = new Date().toISOString()
 
-    const start = Date.now(); // tiempo que comenzo la respuesta
+    console.log(`${fecha} - Método: ${req.method} - Url: ${req.url} - Ip:  ${req.ip}`)
+
+    const start = Date.now()
 
     res.on("finish", () => {
-        const duration = Date.now() - start // tiempo que termino la respuesta
-        console.log(`[${fecha}] Response: ${res.statusCode} - ${duration}ms`)
+        const duracion = Date.now() - start
+        console.log(`${fecha} - Status: ${res.statusCode} - Duracion: ${duracion}ms`)
     })
 
     next()
 }
 
-module.exports = LoggerMiddleware;
+module.exports = LoggerMiddleware
