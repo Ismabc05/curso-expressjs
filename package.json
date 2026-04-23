@@ -14,9 +14,11 @@
   "license": "MIT",
   "description": "curso express.js",
   "dependencies": {
+    "@prisma/client": "^6.19.3",
     "body-parser": "^2.2.2",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "pg": "^8.20.0"
   },
   "repository": {
     "type": "git",
@@ -25,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/Ismabc05/curso-expressjs/issues"
   },
-  "homepage": "https://github.com/Ismabc05/curso-expressjs#readme"
+  "homepage": "https://github.com/Ismabc05/curso-expressjs#readme",
+  "devDependencies": {
+    "prisma": "^6.19.3"
+  }
 }
