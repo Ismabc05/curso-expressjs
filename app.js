@@ -1,5 +1,8 @@
 require("dotenv").config() 
 const express = require("express")
+const { PrismaClient } = require("./generated/prisma")
+const prisma = new PrismaClient();
+// con esta configuracion de prisma se comunoca con nuestra base de datos 
 const bodyParser = require("body-parser")
 
 const LoggerMiddleware = require("./middlewares/logger")
@@ -169,6 +172,14 @@ app.get("/error", (req, res, next) => {
     next(new Error("Error intecionado"))
 });
 
+app.get("/db-users" , async (req, res) => { //usamos async porqure necesario porque la consulta a la base de datos es asíncrona.
+    try {
+        const users = await prisma.user.findMany() // obtengo todos los registros de mi tabla user
+        res.json(users)
+    } catch (error) {
+        res.status(500).json({error: "Error al comunicarse con la base de datos"})
+    }
+})
 
 app.listen(PORT, () => {
     console.log("Servidor corriendo")
